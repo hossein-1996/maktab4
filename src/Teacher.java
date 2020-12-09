@@ -1,4 +1,4 @@
-public class Teacher {
+public class Teacher implements Entity {
     private int id;
     private String fname;
     private String lname;
@@ -25,5 +25,11 @@ public class Teacher {
     public Teacher(String fname, String lname) {
         this.fname = fname;
         this.lname = lname;
+    }
+    public Teacher() { }
+
+    @Override
+    public String toString() {
+        return "teacher";
     }
 }

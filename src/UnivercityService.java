@@ -4,51 +4,34 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class UnivercityService {
+public class UnivercityService <T extends Entity>{
+    T table;
+    public UnivercityService(T table){
+        this.table=table;
+    }
 
-   public void addStudent(Student student){
-       try(Connection connection = ConnectionFactory.getConnection();
-           PreparedStatement preparedStatement = connection.prepareStatement
-                   ("insert into student(fname,lname) VALUES(?,?)")) {
-           preparedStatement.setString(1,student.getFname());
-           preparedStatement.setString(2,student.getLname());
-           preparedStatement.executeUpdate();
-       } catch (SQLException sqlException) {
-           sqlException.printStackTrace();
-       }
-   }
-    public void addTeacher(Teacher teacher){
+    public void add(T table){
         try(Connection connection = ConnectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("insert into teacher(fname,lname) VALUES(?,?)")) {
-            preparedStatement.setString(1,teacher.getFname());
-            preparedStatement.setString(2,teacher.getLname());
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into "+ table.toString() +"(fname,lname) VALUES(?,?)")) {
+            preparedStatement.setString(1,table.getFname());
+            preparedStatement.setString(2,table.getLname());
             preparedStatement.executeUpdate();
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            System.out.println("can not add this record");
         }
     }
-    public void deleteStudent(int id){
+    public void delete(int id,T t){
         try(Connection connection = ConnectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("delete from student where id=?")) {
+            PreparedStatement preparedStatement = connection.prepareStatement("delete from "+table.toString()+" where id=?")) {
             preparedStatement.setInt(1,id);
             preparedStatement.executeUpdate();
         } catch (SQLException sqlException) {
-                sqlException.printStackTrace();
+            System.out.println("can not delete this record");
         }
     }
-    public void deleteTeacher(int id){
-        try(Connection connection = ConnectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement
-                    ("delete from teacher where id=?")) {
-            preparedStatement.setInt(1,id);
-            preparedStatement.executeUpdate();
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-    }
-    public void studentDisplay() {
+    public void Display() {
         try (Connection connection = ConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("select * from student");
+             PreparedStatement preparedStatement = connection.prepareStatement("select * from "+ table.toString());
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
             while (resultSet.next()) {
@@ -60,25 +43,10 @@ public class UnivercityService {
                 System.out.println();
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            System.out.println("There is a problem");
         }
     }
-    public void teacherDisplay() {
-        try (Connection connection = ConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("select * from teacher");
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            while (resultSet.next()) {
-                System.out.print("id : " + resultSet.getInt("id"));
-                System.out.print("\t");
-                System.out.print("fname : " + resultSet.getString("fname"));
-                System.out.print("\t");
-                System.out.print("lname : " + resultSet.getString("lname"));
-                System.out.println();
-            }
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-    }
+
     public void student_teacherDisplay() {
         try (Connection connection = ConnectionFactory.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement("select * from student_teacher");
@@ -90,7 +58,7 @@ public class UnivercityService {
                 System.out.println();
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            System.out.println("There is a problem");
         }
     }
     public void selectTeacher(int studentId,int teacherId){
@@ -100,7 +68,7 @@ public class UnivercityService {
             preparedStatement.setInt(2,teacherId);
             preparedStatement.executeUpdate();
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            System.out.println("There is a problem");
         }
     }
     public void studentList(int teacherId){
@@ -123,31 +91,20 @@ public class UnivercityService {
                 System.out.println();
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            System.out.println("There is a problem");
         }
     }
-    public void editStudent(String fname,String lname,int where){
+    public void edit(String fname,String lname,int where,T t){
         try(Connection connection = ConnectionFactory.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement
-                    ("UPDATE student set fname=?,lname=? where ID=?")) {
+                    ("UPDATE "+table.toString()+" set fname=?,lname=? where ID=?")) {
             preparedStatement.setString(1,fname);
             preparedStatement.setString(2,lname);
             preparedStatement.setInt(3,where);
             preparedStatement.executeUpdate();
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            System.out.println("There is a problem");
         }
     }
-    public void editTeacher(String fname,String lname,int where){
-        try(Connection connection = ConnectionFactory.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement("UPDATE teacher set fname=?,lname=? where ID=?")) {
-            preparedStatement.setString(1,fname);
-            preparedStatement.setString(2,lname);
-            preparedStatement.setInt(3,where);
-            preparedStatement.executeUpdate();
-        } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
-        }
-    }
-}
 
+}
